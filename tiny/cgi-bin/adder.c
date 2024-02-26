@@ -5,15 +5,16 @@
 #include "csapp.h"
 
 int main(void) {
-  char *buf, *p;
+  char *buf, *p, *p2;
   char arg1[MAXLINE], arg2[MAXLINE], content[MAXLINE];
   int n1 = 0, n2 = 0;
 
   if((buf = getenv("QUERY_STRING"))!= NULL) {
     p = strchr(buf,'&');
     *p = '\0';
-    strcpy(arg1,buf);
-    strcpy(arg2,p+1);
+    p2 = strchr(buf,'=');
+    strcpy(arg1,p2+1);
+    strcpy(arg2,p+3);
     n1= atoi(arg1);
     n2= atoi(arg2);
   }

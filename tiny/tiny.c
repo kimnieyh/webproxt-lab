@@ -112,6 +112,11 @@ int parse_uri(char *uri, char *filename, char *cgiargs)
     return 1;
   }else  // 동적 콘텐츠
   {
+    if(!strstr(uri,"adder"))
+    {
+      strcpy(filename,"./cgi-bin/adder.html");
+      return 1;
+    }
     ptr = index(uri,'?');
     if(ptr) {
       strcpy(cgiargs,ptr+1);
