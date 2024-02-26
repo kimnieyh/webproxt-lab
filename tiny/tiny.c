@@ -134,7 +134,7 @@ void serve_static(int fd, char *filename, int filesize)
   //send response headers to client
   get_filetype(filename, filetype);
   // 출력 결과를 저장하는 문자열의 포인터를 앞에 둠 
-  sprintf(buf,"HTTP/1.0 200 OK\r\n");
+  sprintf(buf,"HTTP/1.1 200 OK\r\n");
   sprintf(buf,"%sServer: Tiny Web Server \r\n",buf);
   sprintf(buf,"%sConnection: close\r\n",buf);
   sprintf(buf,"%sContent-length: %d\r\n",buf,filesize);
@@ -159,7 +159,7 @@ void serve_dynamic(int fd, char *filename, char *cgiargs)
 
   // return
   // 응답 상태
-  sprintf(buf, "HTTP/1.0 200 OK\r\n");
+  sprintf(buf, "HTTP/1.1 200 OK\r\n");
   Rio_writen(fd,buf,strlen(buf));
   // 서버 헤더
   sprintf(buf,"Server: Tiny Web Server\r\n");
@@ -202,7 +202,7 @@ void clienterror(int fd,char *cause,char *errnum,
   sprintf(body,"%s%s: %s\r\n",body,longmsg,cause);
   sprintf(body,"%s<hr><em>The Tiny Web serber</em>\r\n",body);
 
-  sprintf(buf,"HTTP/1.0 %s %s\r\n",errnum,shortmsg);
+  sprintf(buf,"HTTP/1.1 %s %s\r\n",errnum,shortmsg);
   Rio_writen(fd,buf,strlen(buf));
   sprintf(buf,"Content-type: text/html\r\n");
   Rio_writen(fd,buf,strlen(buf));
