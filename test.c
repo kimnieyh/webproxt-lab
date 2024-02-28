@@ -1,18 +1,29 @@
 #include <stdio.h>
 #include <string.h>
 
-int main() {
-    const char *haystack = "127.0.0.0:80";
-    const char *needle = strchr(haystack,':');
-    char result[100]; 
-    printf("%zu\n",strlen(haystack)-strlen(needle));
-    // strncpy(result,haystack,strlen(haystack)-strlen(needle));
-    strcpy(result,haystack+(strlen(haystack)-strlen(needle)+1));
-    if (result != NULL) {
-        printf("부분 문자열이 발견되었습니다: %s\n", result);
-    } else {
-        printf("부분 문자열이 발견되지 않았습니다.\n");
-    }
+struct cache{
+  char path[1000];
+  char content[1000];
+};
 
+static struct cache cachelist[10];
+
+int main() {
+    for(int i = 0 ; i < 10 ; i ++) {
+        struct cache temp;
+        strcpy(temp.path,"");
+        strcpy(temp.content,"");
+        cachelist[i] = temp;
+    }
+    struct cache c;
+    strcpy(c.path,"123");
+    strcpy(c.content,"456");
+    cachelist[0] = c;
+    for(int i = 0 ; i < 10 ; i ++) {
+        printf("%s\n",cachelist[i].path);
+        if(strlen(cachelist[i].path)==0){
+            printf("null입니다.\n");
+        }
+    }
     return 0;
 }
