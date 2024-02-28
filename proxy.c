@@ -8,7 +8,7 @@ void sendhttp(int connfd);
 void parse_uri(char *uri, char *host, char*port, char*path);
 void doit(int connfd);
 void read_requesthdrs(rio_t *rp,char *newbuf);
-void read_response(rio_t *rp,char *newbuf);
+void read_response(rio_t *rp,int connfd);
 
 /* You won't lose style points for including this long line in your code */
 static const char *user_agent_hdr =
@@ -66,8 +66,8 @@ void sendhttp(int connfd)
   Rio_readinitb(&rio_response,clientfd);
   read_requesthdrs(&rio,buf);
   Rio_writen(clientfd,buf,strlen(buf));
-  read_response(&rio_response,buf);
-  Rio_writen(connfd,buf,strlen(buf));
+  read_response(&rio_response,connfd);
+  Close(clientfd);
 }
 
 void parse_uri(char *uri, char *host, char*port, char*path)
@@ -102,17 +102,23 @@ void read_requesthdrs(rio_t *rp,char *newbuf)
   return;
 }
 
-void read_response(rio_t *rp,char *newbuf)
+void read_response(rio_t *rp,int connfd)
 {
   char buf[MAXLINE];
-  Rio_readlineb(rp,buf,MAXLINE);
-  strcpy(newbuf,buf);
+  size_t n;
 
-  while(Rio_readlineb(rp,buf,MAXLINE)){
-    strcat(newbuf,buf);
+    // 응답 헤더 전송
+  while ((n = Rio_readlineb(rp, buf, MAXLINE)) > 0) {
+      Rio_writen(connfd, buf, n);
+      if (strcmp(buf, "\r\n") == 0) {
+        break; // 헤더의 끝을 나타내는 빈 줄인 경우 종료
+      }
   }
-  printf("new response buf : %s ",newbuf);
-  return;
+
+    // 이진 데이터 전송
+  while ((n = Rio_readnb(rp, buf, MAXLINE)) > 0) {
+      Rio_writen(connfd, buf, n);
+  }
 }
 void responsecli(char* response){
 
