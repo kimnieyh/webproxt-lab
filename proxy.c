@@ -6,8 +6,8 @@
 #define MAX_OBJECT_SIZE 102400
 
 struct cache{
-  char path[MAX_OBJECT_SIZE];
-  char content[MAX_CACHE_SIZE];
+  char path[MAXLINE];
+  char content[MAX_OBJECT_SIZE];
 };
 
 static struct cache cachelist[10];
@@ -24,10 +24,8 @@ static const char *user_agent_hdr =
     "Firefox/10.0.3\r\n";
 void cache_init(){
   for(int i = 0 ; i < 10 ; i ++) {
-        struct cache temp;
-        strcpy(temp.path,"");
-        strcpy(temp.content,"");
-        cachelist[i] = temp;
+        strcpy(cachelist[i].path, "");
+        strcpy(cachelist[i].content, "");
     }
 }
 int cache_find(char *path){
@@ -60,7 +58,7 @@ void cache_write(char *path,char *content){
 int main(int argc, char **argv) {
   cache_init();
   printf("%s", user_agent_hdr);
-  int listenfd,clientfd, connfd ,*connfdp;
+  int listenfd,*connfdp;
   pthread_t tid;
   char hostname[MAXLINE], port[MAXLINE];
   socklen_t clientlen;
@@ -95,11 +93,6 @@ void *thread(void *vargp)
 }
 
 void doit(int connfd)
-{
-  sendhttp(connfd);
-}
-
-void sendhttp(int connfd)
 {
   rio_t rio,rio_response;
   int clientfd;

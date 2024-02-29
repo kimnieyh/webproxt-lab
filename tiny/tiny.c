@@ -74,7 +74,7 @@ void doit(int fd)
   if(is_static) {// 정적 컨텐츠
     if(!(S_ISREG(sbuf.st_mode)) || !(S_IRUSR & sbuf.st_mode)) {
       clienterror(fd,filename,"403","Forbidden",
-      "Tiny couldn't run CGI program");
+      "Tiny couldn't run program");
       return;
     }
     serve_static(fd,filename,sbuf.st_size);
